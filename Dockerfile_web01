@@ -1,0 +1,30 @@
+#eninx:1.19を指定してベースイメージを作成
+FROM nginx:1.19
+MAINTAINER CTL
+
+#httpポートオープン
+EXPOSE 80
+#httpsポートオープン
+EXPOSE 443
+#uwsgiポートオープン
+EXPOSE 3031
+EXPOSE 3032
+
+ADD default.conf /etc/nginx/conf.d
+ADD ssl /etc/nginx/ssl
+
+#nginx.confファイルをバックアップ
+RUN cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf_bk
+#defult.confファイルをバックアップ
+RUN cp /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf_bk
+#htmlフォルダをバックアップ
+RUN cp -r /usr/share/nginx/html/ /usr/share/nginx/html_bk/
+
+#各logのシンボルリンクを削除※ログの出力が標準出力になっているために修正。
+RUN unlink /var/log/nginx/access.log
+RUN unlink /var/log/nginx/error.log
+
+#logフォルダをバックアップ
+RUN cp -r /var/log/nginx/ /var/log/nginx_bk/
+
+

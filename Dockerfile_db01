@@ -1,0 +1,7 @@
+#PostgreSQL:latestを指定してベースイメージを作成
+FROM postgres:12.3
+MAINTAINER CTL
+
+#PostgreSQLポートオープン
+EXPOSE 5432
+

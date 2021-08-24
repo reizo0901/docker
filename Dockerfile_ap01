@@ -1,0 +1,26 @@
+#Redhat8 UBIを指定してベースイメージを作成
+FROM    python:3.7.5 
+MAINTAINER CTL
+
+#nginx連携用ポートオープン
+EXPOSE 3031
+EXPOSE 3032
+#PostgreSQL用ポートオープン
+EXPOSE 5432
+
+RUN mkdir /var/www
+
+#workdirの指定
+
+WORKDIR /var/www
+
+#依存pythonライブラリ一覧コピー
+COPY requirements.txt ./
+#依存Pythonライブラリインストール
+RUN pip install --no-cache-dir -r requirements.txt
+
+WORKDIR /var/www/src
+COPY uwsgi.ini ./
+CMD ["uwsgi","--ini","/var/www/uwsgi.ini"]
+
+

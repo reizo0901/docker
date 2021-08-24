@@ -1,0 +1,84 @@
+server {
+    listen       80;
+    listen  [::]:80;
+    #クライアントリクエストボディサイズ制限
+    #Client_max_body_size 1k;
+    #クライアントリクエストヘッダサイズ制限
+    #client_header_buffer_size 1k;
+    #large_client_header_buffers 4 8k;
+
+    server_name  localhost;
+    #SSLの戻りを設定
+    #return       301             https://$host$request_uri;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+    #クリックジャッキんグ対策
+    #add_header X-Frame-Options SAMEORIGIN;
+    #X-Content-Type-Optionレスポンスヘッダーの値にnosniffを設定して送信することで、Internet ExplorerがMIME sniffing機能で、content-type宣言を回避することを防止。
+    #add_header X-Content-Type-Option nosniff;
+    #クロスサイトスクリプティング(XSS)に対するフィルタ機能を強制的に有効にする。
+    #add-header X-XSS-Protetion "1; mode=block";
+    #Content Security Policy(CSP)は、クロスサイトスクリプティング(XSS)やデータインジェクション攻撃を含む、よく知られた種類の攻撃を検出して軽減することができます。
+    #以下の設定ではWebFontおよびGoogle Analyticsを許容。
+    #add_header Content-Security-policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'ybsafe0evak' https://ssl.google-analytics.com; img-src 'self' https://ssl.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com 'self' https://themes.googleusercontent.com; frame-src 'none' object-src 'none'";
+    #エンティティタグを生成しない。
+    #etag off;
+
+
+
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+        #不要なHTTPメソッドを制限
+        if ($request_method != GET ) {
+            return 403;
+        }
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+
+#SSLを設定したい場合は以下を何とかする必要がある。
+#server {
+#    listen              443                 ssl;
+#    server_name         rinoguchi.com;
+#    ssl_certificate     /etc/nginx/ssl/server.crt; #SSL証明書
+#    ssl_certificate_key /etc/nginx/ssl/server.key; #秘密鍵
+#
+#    location / {
+#        proxy_pass          http://10.88.1.2:8080/;
+#        proxy_redirect      default;
+#    }
+#}
